@@ -22,6 +22,17 @@ printAndRunCommand() {
   echo ""
 }
 
+# Check if the Linux distribution is Ubuntu
+distro=$(lsb_release -i | awk '{print $3}')
+
+if [ "$distro" = "Ubuntu" ]; then
+    echo "Running on Ubuntu. Proceeding with the script..."
+    # Your script's logic goes here
+else
+    echo "This script is designed to run on Ubuntu only. Exiting..."
+    exit 1
+fi
+
 sudo apt-get -y update
 #sudo apt-get -y upgrade
 sudo apt-get -y install curl
