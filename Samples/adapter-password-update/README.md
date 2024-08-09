@@ -83,11 +83,11 @@ SET LANGUAGE=AMENGLISH
 -*
 APP PATH RETAIL_SAMPLES GETTING_STARTED BASEAPP
 -*
-ENGINE SQLPSTGR SET CONNECTION_ATTRIBUTES_EXT {  "name": "CON01","server": "jdbc:postgresql://pshah-db.cu1uam2hhmlc.us-west-2.rds.amazonaws.com:5432/new_db",
+ENGINE SQLPSTGR SET CONNECTION_ATTRIBUTES_EXT {  "name": "CON01","server": "jdbc:postgresql://mydb-db.cu1uam2hhmlc.us-west-2.rds.amazonaws.com:5432/new_db",
   "security_type": "explicit",
   "credentials": {"user": "user8","password": "{AES}1E28C757BEFC4A4A89A065BF962D1299"}}
 END
-ENGINE SQLPSTGR SET CONNECTION_ATTRIBUTES_EXT {  "name": "CON02","server": "jdbc:postgresql://pshah-db.cu1uam2hhmlc.us-west-2.rds.amazonaws.com:5432/webfocus",
+ENGINE SQLPSTGR SET CONNECTION_ATTRIBUTES_EXT {  "name": "CON02","server": "jdbc:postgresql://mydb-db.cu1uam2hhmlc.us-west-2.rds.amazonaws.com:5432/webfocus",
   "security_type": "explicit",
   "credentials": {"user": "webfocus","password": "{AES}695662F8FDFA83737FFF49A0C7AA65100DFEC02B0994442EB13909249AB2E754"}}
 END
@@ -490,7 +490,7 @@ password-update-cronjob-28720375-pqqjs             0/1     Completed   0        
     2024-08-09 07:15:01 - INFO: Found entry for user user8
     2024-08-09 07:15:01 - INFO: Old password: 995F4B8E9BE1664CD154777140918045
     2024-08-09 07:15:01 - INFO: New password: 995F4B8E9BE1664CD154777140918045
-    2024-08-09 07:15:01 - INFO: Found PostgreSQL URL: jdbc:postgresql://pshah-db.cu1uam2hhmlc.us-west-2.rds.amazonaws.com:5432/webfocus
+    2024-08-09 07:15:01 - INFO: Found PostgreSQL URL: jdbc:postgresql://mydb-db.cu1uam2hhmlc.us-west-2.rds.amazonaws.com:5432/webfocus
     2024-08-09 07:15:01 - INFO: Testing connection with new password
     2024-08-09 07:15:01 - INFO: Connection test successful
     2024-08-09 07:15:01 - INFO: Updating configuration file with new password
@@ -513,7 +513,7 @@ password-update-cronjob-28720375-pqqjs             0/1     Completed   0        
     2024-08-09 06:35:01 - INFO: Found entry for user user8
     2024-08-09 06:35:01 - INFO: Old password: 1E28C757BEFC4A4A89A065BF962D1299
     2024-08-09 06:35:01 - INFO: New password: 1E28C757BEFC4A4A89A065BF962D1299
-    2024-08-09 06:35:01 - INFO: Found PostgreSQL URL: jdbc:postgresql://pshah-db.cu1uam2hhmlc.us-west-2.rds.amazonaws.com:5432/webfocus
+    2024-08-09 06:35:01 - INFO: Found PostgreSQL URL: jdbc:postgresql://mydb-db.cu1uam2hhmlc.us-west-2.rds.amazonaws.com:5432/webfocus
     2024-08-09 06:35:01 - INFO: Testing connection with new password
     2024-08-09 06:35:01 - INFO: Connection test successful
     2024-08-09 06:35:01 - INFO: Dry run mode: No changes made to the configuration file
@@ -552,7 +552,7 @@ drwxr-xr-x 9 903 903  6144 Aug  8 21:56 ..
 2024-08-09 16:40:01 - INFO: Found entry for user user8
 2024-08-09 16:40:01 - INFO: Old password: 995F4B8E9BE1664CD154777140918045
 2024-08-09 16:40:01 - INFO: New password: 995F4B8E9BE1664CD154777140918045
-2024-08-09 16:40:01 - INFO: Found PostgreSQL URL: jdbc:postgresql://pshah-db.cu1uam2hhmlc.us-west-2.rds.amazonaws.com:5432/webfocus
+2024-08-09 16:40:01 - INFO: Found PostgreSQL URL: jdbc:postgresql://mydb-db.cu1uam2hhmlc.us-west-2.rds.amazonaws.com:5432/webfocus
 2024-08-09 16:40:01 - INFO: Testing connection with new password
 2024-08-09 16:40:01 - INFO: Connection test successful
 2024-08-09 16:40:01 - INFO: Updating configuration file with new password
