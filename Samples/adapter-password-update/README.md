@@ -1,3 +1,4 @@
+<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
 
 - [Automating Adapter Password Updates in WebFOCUS](#automating-adapter-password-updates-in-webfocus)
    * [Objective](#objective)
@@ -8,17 +9,21 @@
    * [Steps to Create the Script and Automation](#steps-to-create-the-script-and-automation)
       + [Note on Using Heredoc Format](#note-on-using-heredoc-format)
       + [Step 1: Create the Shell Script](#step-1-create-the-shell-script)
-      + [Step 2: Create the ConfigMap for the Script](#step-2-create-the-configmap-for-the-script)
-      + [Step 3: Create the Secret for Username and Password](#step-3-create-the-secret-for-username-and-password)
-      + [Step 4: Create the CronJob to Automate the Process](#step-4-create-the-cronjob-to-automate-the-process)
+      + [Step 2: Create the Secret for Username and Password](#step-2-create-the-secret-for-username-and-password)
+         - [1. Encode the Username and Password](#1-encode-the-username-and-password)
+         - [2. Update the Secret YAML File](#2-update-the-secret-yaml-file)
+      + [Step 3: Create the CronJob to Automate the Process](#step-3-create-the-cronjob-to-automate-the-process)
       + [Customizing the `password-update-cronjob.yaml` File](#customizing-the-password-update-cronjobyaml-file)
          - [1. Adjusting the Schedule Interval](#1-adjusting-the-schedule-interval)
          - [2. Changing the Namespace](#2-changing-the-namespace)
          - [3. Updating the Image Name](#3-updating-the-image-name)
+         - [4. Dry run ](#4-dry-run)
    * [Deployment and Testing](#deployment-and-testing)
       + [Check if everting is deployed corretly ](#check-if-everting-is-deployed-corretly)
       + [Check to see if Automation is working as expected](#check-to-see-if-automation-is-working-as-expected)
       + [Sample output when DRY_RUN is set to true:](#sample-output-when-dry_run-is-set-to-true)
+      + [Sample output in case of username used in secret to update password is not found in file `edasprof.prf`:](#sample-output-in-case-of-username-used-in-secret-to-update-password-is-not-found-in-file-edasprofprf)
+         - [You can also list pods to see if any of them are failed and check logs as shown above ](#you-can-also-list-pods-to-see-if-any-of-them-are-failed-and-check-logs-as-shown-above)
    * [Log file ](#log-file)
       + [Sample Log File Output:](#sample-log-file-output)
       + [Log rotation](#log-rotation)
@@ -252,13 +257,12 @@ log_message "INFO: Script completed"
 EOF
 ```
 
-<!-- TOC --><a name="step-3-create-the-secret-for-username-and-password"></a>
-Certainly! Below is the rewritten version of the instructions for creating the Kubernetes Secret. This approach involves encoding the username and password in base64 beforehand and then updating the `password-secret.yaml` file with those encoded values. This ensures the values can be updated later before applying the Secret to the cluster.
-
+<!-- TOC --><a name="step-2-create-the-secret-for-username-and-password"></a>
 ### Step 2: Create the Secret for Username and Password
 
 Before creating the Kubernetes Secret, you need to encode the username and password in base64 format. Follow these steps:
 
+<!-- TOC --><a name="1-encode-the-username-and-password"></a>
 #### 1. Encode the Username and Password
 
 First, convert the username and password to base64 format:
@@ -274,6 +278,7 @@ echo -n 'myNewPassword123' | base64
 - **Replace `'user8'`** and **`'myNewPassword123'`** with your actual username and password.
 - The output will be the base64 encoded values.
 
+<!-- TOC --><a name="2-update-the-secret-yaml-file"></a>
 #### 2. Update the Secret YAML File
 
 Next, update the `password-secret.yaml` file with the base64-encoded values:
@@ -298,7 +303,7 @@ EOF
 - **Replace `<base64_encoded_username>`** with the base64-encoded username.
 - **Replace `<base64_encoded_password>`** with the base64-encoded password.
 
-<!-- TOC --><a name="step-4-create-the-cronjob-to-automate-the-process"></a>
+<!-- TOC --><a name="step-3-create-the-cronjob-to-automate-the-process"></a>
 ### Step 3: Create the CronJob to Automate the Process
 
 Finally, create the [CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) YAML file:
@@ -409,6 +414,7 @@ containers:
   - **Change to Your Image:** Replace the existing image string with your updated image name.
     - **Example:** `"7212332627.dkr.ecr.us-west-2.amazonaws.com/wfcerepo:wfs-9.3-1.3.1-v16-ga"`
 
+<!-- TOC --><a name="4-dry-run"></a>
 #### 4. Dry run 
 
 By default, the script runs in dry run mode - so it will not update the password in the configuration file.
@@ -550,6 +556,7 @@ password-update-cronjob-28720375-pqqjs             0/1     Completed   0        
     2024-08-09 06:35:01 - INFO: Dry run mode: No changes made to the configuration file
     2024-08-09 06:35:01 - INFO: Script completed
     ```
+<!-- TOC --><a name="sample-output-in-case-of-username-used-in-secret-to-update-password-is-not-found-in-file-edasprofprf"></a>
 ### Sample output in case of username used in secret to update password is not found in file `edasprof.prf`:
 
     ```bash
@@ -561,6 +568,7 @@ password-update-cronjob-28720375-pqqjs             0/1     Completed   0        
     2024-08-09 21:25:01 - ERROR: User user_new not found in /opt/ibi/srv/storage/wfs/etc/edasprof.prf --
     ```
 
+<!-- TOC --><a name="you-can-also-list-pods-to-see-if-any-of-them-are-failed-and-check-logs-as-shown-above"></a>
 #### You can also list pods to see if any of them are failed and check logs as shown above 
 
 ```bash 
