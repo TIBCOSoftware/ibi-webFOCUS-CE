@@ -406,8 +406,9 @@ By default, the script runs in dry run mode - so it will not update the password
 To update the password in the configuration file you need to set `DRY_RUN` to false.
 
 ```yaml
-            - name: DRY_RUN
-              value: "true" # Default to true
+env:
+- name: DRY_RUN
+  value: "true" # Default to true
 ```
 
 
