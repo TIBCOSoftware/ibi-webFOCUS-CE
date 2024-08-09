@@ -458,8 +458,8 @@ password-update-cronjob-28720375-pqqjs             0/1     Completed   0        
 <!-- TOC --><a name="check-to-see-if-automation-is-working-as-expected"></a>
 ### Check to see if Automation is working as expected
 
-[!IMPORTANT]  
-By default, CronJob runs script with Dry-run set to true - so inder order to password to be updated you need to deploy CronJob setting Dry run to false
+> [!IMPORTANT]  
+> By default, CronJob runs script with Dry-run set to true - so inder order to password to be updated you need to deploy CronJob setting Dry run to false
 
 * Change the Database Password: Log in to your database and manually change the password for the user specified in the secret.
 * Verify WebFOCUS Connection: Attempt to connect through WebFOCUS. The connection should fail since the password has changed.  
