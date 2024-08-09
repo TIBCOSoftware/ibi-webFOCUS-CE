@@ -101,11 +101,10 @@ END
 
 The commands provided below are in [heredoc](https://linuxize.com/post/bash-heredoc/) format. This means you can copy each block of code, paste it directly into your command prompt, and it will automatically create the corresponding file. 
 
-At the end of running all the commands, you will have four files:
+At the end of running all the commands, you will have three files:
 
 - `password-secret.yaml`
 - `password-update-cronjob.yaml`
-- `password-update-script-configmap.yaml`
 - `password-update.sh`
 
 These files will be used to configure and deploy the automation in your Kubernetes environment.
@@ -253,27 +252,31 @@ log_message "INFO: Script completed"
 EOF
 ```
 
-<!-- TOC --><a name="step-2-create-the-configmap-for-the-script"></a>
-### Step 2: Create the ConfigMap for the Script
+<!-- TOC --><a name="step-3-create-the-secret-for-username-and-password"></a>
+Certainly! Below is the rewritten version of the instructions for creating the Kubernetes Secret. This approach involves encoding the username and password in base64 beforehand and then updating the `password-secret.yaml` file with those encoded values. This ensures the values can be updated later before applying the Secret to the cluster.
 
-Next, create a ConfigMap that will store the script in your Kubernetes cluster:
+### Step 2: Create the Secret for Username and Password
+
+Before creating the Kubernetes Secret, you need to encode the username and password in base64 format. Follow these steps:
+
+#### 1. Encode the Username and Password
+
+First, convert the username and password to base64 format:
 
 ```bash
-cat <<EOF > password-update-script-configmap.yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: password-update-script
-  namespace: webfocus
-data:
-  password-update.sh: |
-$(sed 's/^/    /' password-update.sh)
-EOF
+echo -n 'user8' | base64
 ```
-<!-- TOC --><a name="step-3-create-the-secret-for-username-and-password"></a>
-### Step 3: Create the Secret for Username and Password
 
-Now, create the Kubernetes Secret that will store the base64-encoded username and password:
+```bash
+echo -n 'myNewPassword123' | base64
+```
+
+- **Replace `'user8'`** and **`'myNewPassword123'`** with your actual username and password.
+- The output will be the base64 encoded values.
+
+#### 2. Update the Secret YAML File
+
+Next, update the `password-secret.yaml` file with the base64-encoded values:
 
 ```bash
 cat <<EOF > password-secret.yaml
@@ -284,13 +287,19 @@ metadata:
   namespace: webfocus
 type: Opaque
 data:
-  username: $(echo -n 'user8' | base64)     # Replace 'user8' with the actual username
-  password: $(echo -n 'myNewPassword123' | base64)      # Replace 'myNewPassword123' with the actual password
+  username: <base64_encoded_username>     # Replace with the base64 encoded username
+  password: <base64_encoded_password>      # Replace with the base64 encoded password
 EOF
 ```
 
+> [!IMPORTANT]  
+> Ensure that you replace the placeholders with the actual base64-encoded values:
+
+- **Replace `<base64_encoded_username>`** with the base64-encoded username.
+- **Replace `<base64_encoded_password>`** with the base64-encoded password.
+
 <!-- TOC --><a name="step-4-create-the-cronjob-to-automate-the-process"></a>
-### Step 4: Create the CronJob to Automate the Process
+### Step 3: Create the CronJob to Automate the Process
 
 Finally, create the [CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) YAML file:
 
@@ -421,7 +430,13 @@ Run the following commands:
  
 ```bash
 kubectl apply -f password-secret.yaml
-kubectl apply -f password-update-script-configmap.yaml
+
+# Read shell script and create a ConfigMap ( store script in cluster as ConfigMap)
+kubectl create configmap password-update-script \
+  --namespace=webfocus \
+  --from-file=password-update.sh
+
+
 kubectl apply -f password-update-cronjob.yaml
 ```
 
@@ -535,6 +550,26 @@ password-update-cronjob-28720375-pqqjs             0/1     Completed   0        
     2024-08-09 06:35:01 - INFO: Dry run mode: No changes made to the configuration file
     2024-08-09 06:35:01 - INFO: Script completed
     ```
+### Sample output in case of username used in secret to update password is not found in file `edasprof.prf`:
+
+    ```bash
+    ubuntu:~/update-password$kubectl logs -n webfocus password-update-cronjob-28720645-dvtmg 
+    /tmp/password-update.sh: line 34: hostname: command not found
+    2024-08-09 21:25:01 - INFO: Script started by ibi on 
+    2024-08-09 21:25:01 - INFO: psql found on system
+    2024-08-09 21:25:01 - INFO: Encrypted password generated: 57C899401754919D7783ED4E18BDF1C0
+    2024-08-09 21:25:01 - ERROR: User user_new not found in /opt/ibi/srv/storage/wfs/etc/edasprof.prf --
+    ```
+
+#### You can also list pods to see if any of them are failed and check logs as shown above 
+
+```bash 
+ubuntu:~/update-password$kubectl get pods -n webfocus | grep password
+password-update-cronjob-28720625-btlb5             0/1     Completed   0          31m
+password-update-cronjob-28720630-49h2c             0/1     Completed   0          26m
+password-update-cronjob-28720635-n8drg             0/1     Completed   0          21m
+password-update-cronjob-28720645-dvtmg              0/1     Error       0          102s
+```
 
 <!-- TOC --><a name="log-file"></a>
 ## Log file 
