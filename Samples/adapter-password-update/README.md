@@ -400,6 +400,16 @@ containers:
   - **Change to Your Image:** Replace the existing image string with your updated image name.
     - **Example:** `"7212332627.dkr.ecr.us-west-2.amazonaws.com/wfcerepo:wfs-9.3-1.3.1-v16-ga"`
 
+#### 4. Dry run 
+
+By default, the script runs in dry run mode - so it will not update the password in the configuration file.
+To update the password in the configuration file you need to set `DRY_RUN` to false.
+
+```yaml
+            - name: DRY_RUN
+              value: "true" # Default to true
+```
+
 
 <!-- TOC --><a name="deployment-and-testing"></a>
 ## Deployment and Testing
@@ -446,6 +456,9 @@ password-update-cronjob-28720375-pqqjs             0/1     Completed   0        
 
 <!-- TOC --><a name="check-to-see-if-automation-is-working-as-expected"></a>
 ### Check to see if Automation is working as expected
+
+[!IMPORTANT]  
+By default, CronJob runs script with Dry-run set to true - so inder order to password to be updated you need to deploy CronJob setting Dry run to false
 
 * Change the Database Password: Log in to your database and manually change the password for the user specified in the secret.
 * Verify WebFOCUS Connection: Attempt to connect through WebFOCUS. The connection should fail since the password has changed.  
