@@ -403,12 +403,12 @@ containers:
 #### 4. Dry run 
 
 By default, the script runs in dry run mode - so it will not update the password in the configuration file.
-To update the password in the configuration file you need to set `DRY_RUN` to false.
+To update the password in the configuration file you need to set `DRY_RUN` to `false`.
 
 ```yaml
 env:
 - name: DRY_RUN
-  value: "true" # Default to true
+  value: "false" # Default to true
 ```
 
 
@@ -496,6 +496,8 @@ password-update-cronjob-28720375-pqqjs             0/1     Completed   0        
     This command will print the decoded password to confirm the update was successful.
 
 * Check the logs of POD that was created by the CronJob to see the output of the script.  
+    Command `kubectl logs -n webfocus password-update-cronjob-28719760-jbtqn` - replace the pod name as it will be different in your case.
+
     ```bash
     ubuntu:~/$kubectl logs -n webfocus password-update-cronjob-28719760-jbtqn 
     2024-08-09 07:15:01 - INFO: Script started by ibi on 
