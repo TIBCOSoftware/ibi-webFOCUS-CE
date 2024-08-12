@@ -104,7 +104,8 @@ END
 <!-- TOC --><a name="note-on-using-heredoc-format"></a>
 ### Note on Using Heredoc Format
 
-The commands provided below are in [heredoc](https://linuxize.com/post/bash-heredoc/) format. This means you can copy each block of code, paste it directly into your command prompt, and it will automatically create the corresponding file. 
+> [!IMPORTANT]  
+> The commands provided below are in [heredoc](https://linuxize.com/post/bash-heredoc/) format. This means you can copy each block of code, paste it directly into your command prompt, and it will automatically create the corresponding file. 
 
 At the end of running all the commands, you will have three files:
 
@@ -121,6 +122,11 @@ These files will be used to configure and deploy the automation in your Kubernet
 Create the shell script using the following command:
 
 ```bash
+
+############################################################################################################
+################ Copy and paste below text in your terminal to create a shell script   #####################
+############################################################################################################
+
 cat <<EOF > password-update.sh
 #!/bin/bash
 
@@ -181,7 +187,7 @@ else
 fi
 
 # Encrypt the password
-ENCRYPTED_PASSWORD_OUTPUT=\$(\$ENCRYPT_TOOL -encr "\$PASSWORD")
+ENCRYPTED_PASSWORD_OUTPUT=\$("\$ENCRYPT_TOOL" -encr "\$PASSWORD")
 ENCRYPTED_PASSWORD=\$(echo "\$ENCRYPTED_PASSWORD_OUTPUT" | grep -oP '(?<=\{AES\})[A-F0-9]+')
 
 if [ -z "\$ENCRYPTED_PASSWORD" ]; then
@@ -193,17 +199,19 @@ log_message "INFO: Encrypted password generated: \$ENCRYPTED_PASSWORD"
 
 # Initialize flags and variables
 UPDATED=false
-JDBC_URL=""
+USER_FOUND=false
 URL_FOUND=false
 
+# Search for the user in the config file
 while IFS= read -r LINE; do
   if echo "\$LINE" | grep -q "\"user\": \"\$USER\""; then
+    USER_FOUND=true
     OLD_PASSWORD=\$(echo "\$LINE" | grep -oP '(?<=\{AES\})[A-F0-9]+')
     log_message "INFO: Found entry for user \$USER"
     log_message "INFO: Old password: \$OLD_PASSWORD"
     log_message "INFO: New password: \$ENCRYPTED_PASSWORD"
     
-    # Extract JDBC URL
+    # Extract JDBC URL and check if it's PostgreSQL
     while IFS= read -r URL_LINE; do
       if echo "\$URL_LINE" | grep -q "\"server\": \"jdbc:postgresql://"; then
         JDBC_URL=\$(echo "\$URL_LINE" | grep -oP '(?<=server": ")[^"]+')
@@ -211,8 +219,14 @@ while IFS= read -r LINE; do
         break
       fi
     done
+    break
   fi
 done < "\$CONFIG_FILE"
+
+if [ "\$USER_FOUND" = false ]; then
+  log_message "ERROR: User \$USER not found in \$CONFIG_FILE --"
+  exit 1
+fi
 
 if [ "\$URL_FOUND" = true ]; then
   log_message "INFO: Found PostgreSQL URL: \$JDBC_URL"
@@ -449,7 +463,7 @@ kubectl apply -f password-update-cronjob.yaml
 2. Test the Setup:
 
 <!-- TOC --><a name="check-if-everting-is-deployed-corretly"></a>
-### Check if everting is deployed corretly 
+### Check if everything is deployed correctly 
 
 See below commands that you can use to check if Secret , Config Mapd and CronJob is deployed correctly.
 
