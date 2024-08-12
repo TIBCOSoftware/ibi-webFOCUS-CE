@@ -1,6 +1,8 @@
 <!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
 
 - [Automating Adapter Password Updates in WebFOCUS](#automating-adapter-password-updates-in-webfocus)
+   * [TL;DR](#tldr)
+   * [Required Skills](#required-skills)
    * [Objective](#objective)
    * [Overview](#overview)
    * [Shell Script Details](#shell-script-details)
@@ -19,7 +21,7 @@
          - [3. Updating the Image Name](#3-updating-the-image-name)
          - [4. Dry run ](#4-dry-run)
    * [Deployment and Testing](#deployment-and-testing)
-      + [Check if everting is deployed corretly ](#check-if-everting-is-deployed-corretly)
+      + [Check if everything is deployed correctly ](#check-if-everything-is-deployed-correctly)
       + [Check to see if Automation is working as expected](#check-to-see-if-automation-is-working-as-expected)
       + [Sample output when DRY_RUN is set to true:](#sample-output-when-dry_run-is-set-to-true)
       + [Sample output in case of username used in secret to update password is not found in file `edasprof.prf`:](#sample-output-in-case-of-username-used-in-secret-to-update-password-is-not-found-in-file-edasprofprf)
@@ -28,15 +30,56 @@
       + [Sample Log File Output:](#sample-log-file-output)
       + [Log rotation](#log-rotation)
    * [Conclusion and Next Steps](#conclusion-and-next-steps)
+   * [Troubleshooting](#troubleshooting)
    * [Appendix](#appendix)
       + [Overview of the `password-update.sh` Script](#overview-of-the-password-updatesh-script)
       + [Key Features:](#key-features)
-         - [Conclusion:](#conclusion)
 
 <!-- TOC end -->
 
 <!-- TOC --><a name="automating-adapter-password-updates-in-webfocus"></a>
 # Automating Adapter Password Updates in WebFOCUS
+
+
+<!-- TOC --><a name="tldr"></a>
+## TL;DR
+
+This project automates the process of updating WebFOCUS adapter passwords in Kubernetes environments. It uses a shell script to modify the `edasprof.prf` file, a Kubernetes Secret to store credentials, and a CronJob for periodic execution. The automation supports dry-run mode, logs all actions, and includes safeguards like connection testing for PostgreSQL databases.
+
+<!-- TOC --><a name="required-skills"></a>
+## Required Skills
+
+To effectively use and modify this automation, you should have knowledge in the following areas:
+
+1. **Shell Scripting**: Ability to read, write, and debug Bash scripts.
+
+2. **WebFOCUS Configuration**: 
+   - Understanding of the `edasprof.prf` file structure and its role in WebFOCUS.
+   - Familiarity with WebFOCUS adapter configuration.
+
+3. **WebFOCUS 9.3 Features**: 
+   - Knowledge of the new password encryption feature in WebFOCUS 9.3.
+   - Understanding of how to use the `tscom300.out` utility for password encryption.
+
+4. **Kubernetes**:
+   - Basic Kubernetes concepts (Pods, Secrets, CronJobs, ConfigMaps).
+   - Ability to deploy and manage Kubernetes resources.
+   - Experience with `kubectl` for interacting with Kubernetes clusters.
+
+5. **Database Knowledge**:
+   - Basic understanding of database connections, especially PostgreSQL.
+   - Familiarity with JDBC URLs and database credentials management.
+
+6. **Troubleshooting Skills**:
+   - Ability to debug shell scripts.
+   - Experience in troubleshooting Kubernetes deployments.
+   - Log analysis and interpretation.
+
+7. **Security Best Practices**:
+   - Understanding of secure password management.
+   - Familiarity with Kubernetes security concepts (RBAC, Secrets management).
+
+Familiarity with these areas will help you understand, implement, and potentially extend this automation solution for WebFOCUS adapter password management.
 
 In WebFOCUS, adapter passwords are stored in the `../etc/edasprof.prf` file. To enhance security and ensure that password updates are handled efficiently, we need to automate the process of updating passwords for specified users in this file.
 
@@ -462,7 +505,7 @@ kubectl apply -f password-update-cronjob.yaml
 
 2. Test the Setup:
 
-<!-- TOC --><a name="check-if-everting-is-deployed-corretly"></a>
+<!-- TOC --><a name="check-if-everything-is-deployed-correctly"></a>
 ### Check if everything is deployed correctly 
 
 See below commands that you can use to check if Secret , Config Mapd and CronJob is deployed correctly.
@@ -655,6 +698,22 @@ Next Steps:
 
 By following this guide, you should have a solid foundation for automating password management in your WebFOCUS environment.
 
+<!-- TOC --><a name="troubleshooting"></a>
+## Troubleshooting
+
+Here are some common issues you might encounter and how to resolve them:
+
+1. **CronJob not running:**
+   - Check the CronJob schedule using `kubectl get cronjobs -n webfocus`.
+   - Verify that the CronJob's pod is being created using `kubectl get pods -n webfocus`.
+
+2. **Password not updating:**
+   - Check the logs of the most recent pod created by the CronJob.
+   - Ensure that the `DRY_RUN` environment variable is set to "false" in the CronJob YAML.
+
+3. **Database connection failing:**
+   - Verify that the database credentials in the Secret are correct.
+   - Check if the database is accessible from the Kubernetes cluster.
 ___
 
 <!-- TOC --><a name="appendix"></a>
@@ -740,9 +799,3 @@ The `password-update.sh` script is designed to automate the process of updating 
 
   - If the `--dry-run` flag is set, the script logs the actions it would take without making any actual changes.
 
-<!-- TOC --><a name="conclusion"></a>
-#### Conclusion:
-
-The `password-update.sh` script is a crucial part of automating WebFOCUS Adapter password rotation management.
-It ensures that passwords are securely encrypted, validates connection details, and logs all actions for traceability.
-Understanding these key components will help you effectively deploy and troubleshoot the script in your environment.
