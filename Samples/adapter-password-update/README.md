@@ -204,7 +204,13 @@ if [ "\$3" == "--dry-run" ]; then
   log_message "INFO: Dry run mode enabled"
 fi
 
-log_message "INFO: Script started by \$(whoami) on \$(hostname)"
+# Handle hostname command absence gracefully
+if command -v hostname &> /dev/null; then
+  HOSTNAME=\$(hostname)
+else
+  HOSTNAME="unknown-host"
+fi
+log_message "INFO: Script started by \$(whoami) on \$HOSTNAME"
 
 # Check if necessary files exist
 CONFIG_FILE="/opt/ibi/srv/storage/wfs/etc/edasprof.prf"
@@ -244,59 +250,54 @@ log_message "INFO: Encrypted password generated: \$ENCRYPTED_PASSWORD"
 UPDATED=false
 USER_FOUND=false
 URL_FOUND=false
+JDBC_URL=""
 
-# Search for the user in the config file
+# Search for JDBC URL and user in the config file
 while IFS= read -r LINE; do
-  if echo "\$LINE" | grep -q "\"user\": \"\$USER\""; then
-    USER_FOUND=true
-    OLD_PASSWORD=\$(echo "\$LINE" | grep -oP '(?<=\{AES\})[A-F0-9]+')
-    log_message "INFO: Found entry for user \$USER"
-    log_message "INFO: Old password: \$OLD_PASSWORD"
-    log_message "INFO: New password: \$ENCRYPTED_PASSWORD"
-    
-    # Extract JDBC URL and check if it's PostgreSQL
-    while IFS= read -r URL_LINE; do
-      if echo "\$URL_LINE" | grep -q "\"server\": \"jdbc:postgresql://"; then
-        JDBC_URL=\$(echo "\$URL_LINE" | grep -oP '(?<=server": ")[^"]+')
-        URL_FOUND=true
-        break
+  # Check if the line contains a PostgreSQL JDBC URL
+  if echo "\$LINE" | grep -q "\"server\": \"jdbc:postgresql://"; then
+    JDBC_URL=\$(echo "\$LINE" | grep -oP '(?<=server": ")[^"]+')
+    URL_FOUND=true
+    log_message "INFO: Found PostgreSQL URL: \$JDBC_URL"
+  fi
+
+  # If a PostgreSQL URL is found, check if the next lines contain the user
+  if [ "\$URL_FOUND" = true ]; then
+    if echo "\$LINE" | grep -q "\"user\": \"\$USER\""; then
+      USER_FOUND=true
+      OLD_PASSWORD=\$(echo "\$LINE" | grep -oP '(?<=\{AES\})[A-F0-9]+')
+      log_message "INFO: Found entry for user \$USER"
+      log_message "INFO: Old password: \$OLD_PASSWORD"
+      log_message "INFO: New password: \$ENCRYPTED_PASSWORD"
+      
+      if [ "\$PSQL_AVAILABLE" = true ]; then
+        DB_HOST=\$(echo "\$JDBC_URL" | sed -n 's|jdbc:postgresql://\([^:/]*\).*|\1|p')
+        DB_PORT=\$(echo "\$JDBC_URL" | sed -n 's|.*:\([0-9]\+\)/.*|\1|p')
+        DB_NAME=\$(echo "\$JDBC_URL" | sed -n 's|.*/\([^?]*\).*|\1|p')
+
+        log_message "INFO: Testing connection with new password"
+        PGPASSWORD=\$PASSWORD psql -h "\$DB_HOST" -p "\$DB_PORT" -U "\$USER" -d "\$DB_NAME" -c '\q'
+        if [ \$? -eq 0 ]; then
+          log_message "INFO: Connection test successful"
+          UPDATED=true
+        else
+          log_message "ERROR: Connection test failed, password will not be updated"
+          UPDATED=false
+        fi
+      else
+        log_message "ERROR: psql not available for testing connection"
+        exit 1
       fi
-    done
-    break
+      break
+    fi
   fi
 done < "\$CONFIG_FILE"
 
 if [ "\$USER_FOUND" = false ]; then
-  log_message "ERROR: User \$USER not found in \$CONFIG_FILE --"
+  log_message "ERROR: User \$USER not found in \$CONFIG_FILE"
   exit 1
 fi
 
-if [ "\$URL_FOUND" = true ]; then
-  log_message "INFO: Found PostgreSQL URL: \$JDBC_URL"
-  if [ "\$PSQL_AVAILABLE" = true ]; then
-    DB_HOST=\$(echo "\$JDBC_URL" | sed -n 's|jdbc:postgresql://\([^:/]*\).*|\1|p')
-    DB_PORT=\$(echo "\$JDBC_URL" | sed -n 's|.*:\([0-9]\+\)/.*|\1|p')
-    DB_NAME=\$(echo "\$JDBC_URL" | sed -n 's|.*/\([^?]*\).*|\1|p')
-
-    log_message "INFO: Testing connection with new password"
-    PGPASSWORD=\$PASSWORD psql -h "\$DB_HOST" -p "\$DB_PORT" -U "\$USER" -d "\$DB_NAME" -c '\q'
-    if [ \$? -eq 0 ]; then
-      log_message "INFO: Connection test successful"
-      UPDATED=true
-    else
-      log_message "ERROR: Connection test failed, password will not be updated"
-      UPDATED=false
-    fi
-  else
-    log_message "ERROR: psql not available for testing connection"
-    exit 1
-  fi
-else
-  log_message "INFO: No PostgreSQL URL found, proceeding with password update assuming validity"
-  UPDATED=true
-fi
-
-# Update the configuration file if test succeeded or if no PostgreSQL URL
 if [ "\$UPDATED" = true ]; then
   if [ "\$DRY_RUN" = false ]; then
     log_message "INFO: Updating configuration file with new password"
