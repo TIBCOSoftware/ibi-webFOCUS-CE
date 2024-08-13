@@ -460,6 +460,9 @@ metadata:
 <!-- TOC --><a name="3-updating-the-image-name"></a>
 #### 3. Updating the Image Name
 
+> [!NOTE]  
+> You muse use WebFOCUS Reporting server image - this image has all the tools required to update the password in the configuration file.
+
 The `image` field specifies the container image to use for the CronJob. If you need to use a different image, update the `image` field with the correct image name.
 
 ```yaml
@@ -770,18 +773,15 @@ The `password-update.sh` script is designed to automate the process of updating 
   If the JDBC URL corresponds to a PostgreSQL database, the script attempts to connect using the new password before applying it.
 
   ```bash
-  if [ "$URL_FOUND" = true ]; then
-    log_message "INFO: Found PostgreSQL URL: $JDBC_URL"
-    if [ "$PSQL_AVAILABLE" = true ]; then
-      PGPASSWORD=$PASSWORD psql -h "$DB_HOST" -p "$DB_PORT" -U "$USER" -d "$DB_NAME" -c '\q'
-      if [ $? -eq 0 ]; then
-        log_message "INFO: Connection test successful"
-      else
-        log_message "ERROR: Connection test failed, password will not be updated"
-        exit 1
-      fi
-    fi
-  fi
+        log_message "INFO: Testing connection with new password"
+        PGPASSWORD=\$PASSWORD psql -h "\$DB_HOST" -p "\$DB_PORT" -U "\$USER" -d "\$DB_NAME" -c '\q'
+        if [ \$? -eq 0 ]; then
+          log_message "INFO: Connection test successful"
+          UPDATED=true
+        else
+          log_message "ERROR: Connection test failed, password will not be updated"
+          UPDATED=false
+        fi
   ```
 
   - This section checks if the URL is for PostgreSQL and tests the new password before updating the file.
