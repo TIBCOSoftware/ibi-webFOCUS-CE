@@ -29,6 +29,33 @@ For more information, visit the [official Chocolatey website](https://chocolatey
 - **Administrator Privileges:** This script requires administrative privileges to install software.
 - **PowerShell:** Make sure you have PowerShell installed on your Windows machine.
 
+#### Running the Script with Administrator Privileges
+
+1. **Open PowerShell as Administrator:**
+   - Right-click the Start button, and select `Windows PowerShell (Admin)`.
+
+2. **Download and Execute the Script:**
+   - Run the following command to download and execute the script:
+     ```powershell
+     iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/TIBCOSoftware/ibi-webFOCUS-CE/work-in-progress/Scripts/bootstrap/windows/install_software.ps1'))
+     ```
+
+#### Example Error Message if Not Run as Administrator
+
+If you run the script without administrative privileges, you will see an error message like this:
+
+```plaintext
+PS C:\Windows\system32> iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/TIBCOSoftware/ibi-webFOCUS-CE/work-in-progress/Scripts/bootstrap/windows/install_software.ps1'))
+Test-Admin : Script must be run as Administrator!
+At line:70 char:1
++ Test-Admin
++ ~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
+    + FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException,Test-Admin
+```
+
+This error occurs because the script needs elevated privileges to install software.
+
 #### Overview of `install_software.ps1`
 
 This script is named `install_software.ps1` and is designed to install a predefined list of software using Chocolatey. It checks for each software's existence on the system and installs it only if it's not already installed, ensuring idempotency.
@@ -55,19 +82,7 @@ The script installs the following software:
 - **WinRAR:** A powerful archiver and archive manager for Windows.
 - **OpenSSH:** A suite of secure networking utilities based on the Secure Shell (SSH) protocol.
 - **Citrix Workspace:** A digital workspace software platform that provides secure access to applications, desktops, and data.
-
-#### Getting the Script from GitHub
-
-You can easily download and run the script from GitHub. Follow these steps:
-
-1. **Open PowerShell as Administrator:**
-   - Right-click the Start button, and select `Windows PowerShell (Admin)`.
-
-2. **Download and Execute the Script:**
-   - Run the following command to download and execute the script:
-     ```powershell
-     iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/TIBCOSoftware/ibi-webFOCUS-CE/work-in-progress/Scripts/bootstrap/windows/install_software.ps1'))
-     ```
+- **Google Chrome:** A fast, secure, and widely-used web browser developed by Google.
 
 #### Customizing the Script
 
@@ -87,6 +102,27 @@ The script is designed to be easily customizable. Here’s how you can modify it
     ```powershell
     @{ ToolName = "newtool"; ChocoName = "newtool" }
     ```
+
+#### Downloading and Running the Script Locally
+
+1. **Download the Script:**
+   - Navigate to the raw script URL in your browser:
+     ```
+     https://raw.githubusercontent.com/TIBCOSoftware/ibi-webFOCUS-CE/work-in-progress/Scripts/bootstrap/windows/install_software.ps1
+     ```
+   - Right-click on the page and select `Save As...` to download the script to your local machine.
+
+2. **Edit the Script:**
+   - Open the downloaded `install_software.ps1` file in a text editor like Notepad++ or Visual Studio Code.
+   - Make any necessary changes to the script, such as adding or removing software installations.
+
+3. **Run the Script Locally:**
+   - Open PowerShell as Administrator.
+   - Navigate to the directory where you saved the script using the `cd` command.
+   - Execute the script by running:
+     ```powershell
+     ./install_software.ps1
+     ```
 
 ### Troubleshooting and FAQs
 
@@ -108,3 +144,156 @@ The script is designed to be easily customizable. Here’s how you can modify it
 2. Open PowerShell with administrative privileges.
 3. Run the script using the provided command.
 
+### Sample output of the script
+
+```plaintext
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+                                                                                                                        Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows                                                                                                                                                       PS C:\Windows\system32> iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/TIBCOSoftware/ibi-webFOCUS-CE/work-in-progress/Scripts/bootstrap/windows/install_software.ps1'))                               Installing Chocolatey...                                                                                                Forcing web requests to allow TLS v1.2 (Required for requests to Chocolatey.org)
+Getting latest version of the Chocolatey package for download.
+Not using proxy.
+Getting Chocolatey from https://community.chocolatey.org/api/v2/package/chocolatey/2.3.0.
+Downloading https://community.chocolatey.org/api/v2/package/chocolatey/2.3.0 to C:\Users\pshah\AppData\Local\Temp\chocolatey\chocoInstall\chocolatey.zip
+Not using proxy.
+Extracting C:\Users\pshah\AppData\Local\Temp\chocolatey\chocoInstall\chocolatey.zip to C:\Users\pshah\AppData\Local\Temp\chocolatey\chocoInstall
+Installing Chocolatey on the local machine
+Creating ChocolateyInstall as an environment variable (targeting 'Machine')
+  Setting ChocolateyInstall to 'C:\ProgramData\chocolatey'
+WARNING: It's very likely you will need to close and reopen your shell
+  before you can use choco.
+Restricting write permissions to Administrators
+We are setting up the Chocolatey package repository.
+The packages themselves go to 'C:\ProgramData\chocolatey\lib'
+  (i.e. C:\ProgramData\chocolatey\lib\yourPackageName).
+A shim file for the command line goes to 'C:\ProgramData\chocolatey\bin'
+  and points to an executable in 'C:\ProgramData\chocolatey\lib\yourPackageName'.
+
+Creating Chocolatey CLI folders if they do not already exist.
+
+chocolatey.nupkg file not installed in lib.
+ Attempting to locate it from bootstrapper.
+PATH environment variable does not have C:\ProgramData\chocolatey\bin in it. Adding...
+WARNING: Not setting tab completion: Profile file does not exist at
+'C:\Users\pshah\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1'.
+Chocolatey CLI (choco.exe) is now ready.
+You can call choco from anywhere, command line or powershell by typing choco.
+Run choco /? for a list of functions.
+You may need to shut down and restart powershell and/or consoles
+ first prior to using choco.
+Ensuring Chocolatey commands are on the path
+Ensuring chocolatey.nupkg is in the lib folder
+Chocolatey installed successfully!
+Installing all tools...
+========================================
+Installing slack...
+Running command: choco install slack -y
+slack installed successfully!
+========================================
+========================================
+Installing notepad++...
+Running command: choco install notepadplusplus -y
+notepad++ installed successfully!
+========================================
+========================================
+Installing 7zip...
+Running command: choco install 7zip -y
+7zip installed successfully!
+========================================
+========================================
+Installing winscp...
+Running command: choco install winscp -y
+winscp installed successfully!
+========================================
+========================================
+Installing MobaXterm...
+Running command: choco install mobaxterm -y
+MobaXterm installed successfully!
+========================================
+========================================
+Installing sublimetext...
+Running command: choco install sublimetext3 -y
+sublimetext installed successfully!
+========================================
+========================================
+Installing putty...
+Running command: choco install putty -y
+putty installed successfully!
+========================================
+========================================
+Installing git...
+Running command: choco install git -y
+git installed successfully!
+========================================
+========================================
+Installing python...
+Running command: choco install python -y
+python installed successfully!
+========================================
+========================================
+Installing conda...
+Running command: choco install miniconda3 -y
+conda installed successfully!
+========================================
+========================================
+Installing vscode...
+Running command: choco install vscode -y
+vscode installed successfully!
+========================================
+========================================
+Installing jdk8...
+Running command: choco install jdk8 -y
+jdk8 installed successfully!
+========================================
+========================================
+Installing docker...
+Running command: choco install docker-desktop -y
+docker installed successfully!
+========================================
+========================================
+Installing adobereader...
+Running command: choco install adobereader -y
+adobereader installed successfully!
+========================================
+========================================
+Installing zoom...
+Running command: choco install zoom -y
+zoom installed successfully!
+========================================
+========================================
+Installing winrar...
+Running command: choco install winrar -y
+winrar installed successfully!
+========================================
+========================================
+Installing openssh...
+Running command: choco install openssh -y
+openssh installed successfully!
+========================================
+========================================
+Installing citrix-workspace...
+Running command: choco install citrix-workspace -y
+citrix-workspace installed successfully!
+========================================
+
+Installation Report:
+=====================
+Slack: Installed
+notepad++: Installed
+7zip: Installed
+winscp: Installed
+MobaXterm: Installed
+sublimetext: Installed
+putty: Installed
+git: Installed
+python: Installed
+conda: Installed
+vscode: Installed
+jdk8: Installed
+docker: Installed
+adobereader: Installed
+zoom: Installed
+winrar: Installed
+openssh: Installed
+citrix-workspace: Installed
+PS C:\Windows\system32>
+PS C:\Windows\system32>
