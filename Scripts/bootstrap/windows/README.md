@@ -3,11 +3,14 @@
 
 ### Introduction
 
-Welcome to the `install_software.ps1` script repository! This PowerShell script is designed to streamline the installation of essential software on a fresh Windows installation. Whether you're setting up a new machine or reconfiguring an existing one, this script automates the tedious process of installing commonly used software, ensuring that your environment is ready to go in no time.
+This PowerShell script is designed to streamline the installation of essential software on a fresh Windows installation.
+Whether you're setting up a new machine or reconfiguring an existing one, this script automates the tedious process of installing commonly used software, ensuring that your environment is ready to go in no time.
 
+![In Action](PowerShell_Choco_install.gif)
 ### Objective
 
-The primary objective of this script is to automate the installation of a suite of software that many users typically install when setting up a new Windows machine. The script currently covers a subset of software that is widely regarded as essential, but you can easily customize it to include additional tools as per your requirements.
+The primary objective of this script is to automate the installation of a suite of software that many users typically install when setting up a new Windows machine. 
+The script currently covers a subset of software that is widely regarded as essential, but you can easily customize it to include additional tools as per your requirements.
 
 ### Introduction to Chocolatey
 
