@@ -1,7 +1,3 @@
-# Description: This script installs all the required software on a Windows machine using Chocolatey package manager.
-# Usage: Run the script as an Administrator.
-# Created by : Pranay
-
 # Function to check if running as administrator
 function Test-Admin {
     $isAdmin = [bool]([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
@@ -64,6 +60,7 @@ $tools = @(
     @{ ToolName = "winrar"; ChocoName = "winrar" }
     @{ ToolName = "openssh"; ChocoName = "openssh" }
     @{ ToolName = "citrix-workspace"; ChocoName = "citrix-workspace" }
+    @{ ToolName = "Google Chrome"; ChocoName = "googlechrome" }
 )
 
 # Run the script
