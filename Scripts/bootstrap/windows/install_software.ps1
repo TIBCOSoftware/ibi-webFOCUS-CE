@@ -53,7 +53,7 @@ $tools = @(
     @{ ToolName = "python"; ChocoName = "python" }
     @{ ToolName = "conda"; ChocoName = "miniconda3" }
     @{ ToolName = "vscode"; ChocoName = "vscode" }
-    @{ ToolName = "jdk8"; ChocoName = "jdk8" }
+    @{ ToolName = "jdk11"; ChocoName = "adoptopenjdk11" } # choco install adoptopenjdk11
     @{ ToolName = "docker"; ChocoName = "docker-desktop" }
     @{ ToolName = "adobereader"; ChocoName = "adobereader" }
     @{ ToolName = "zoom"; ChocoName = "zoom" }
