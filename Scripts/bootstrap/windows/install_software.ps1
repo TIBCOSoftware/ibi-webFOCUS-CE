@@ -1,3 +1,10 @@
+param (
+    [switch]$y
+)
+
+# Global variable to track if the user selected "Yes to all"
+$global:yesToAll = $false
+
 # Function to check if running as administrator
 function Test-Admin {
     $isAdmin = [bool]([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
@@ -27,6 +34,32 @@ function Install-Tool {
     )
 
     if (-not (Get-Command $toolName -ErrorAction SilentlyContinue)) {
+        if (-not $y -and -not $yesToAll) {
+            # Correctly display the tool name in the prompt
+            $response = Read-Host "Do you want to install [$toolName]? (y/n/all/exit)"
+            switch ($response.ToLower()) {
+                "y" { # Proceed with installation
+                    Write-Host "Installing $toolName..."
+                }
+                "n" { # Skip installation
+                    Write-Host "Skipping $toolName based on user choice."
+                    return "skipped"
+                }
+                "all" { # Install all without further asking
+                    Write-Host "Proceeding with 'Yes to all' for remaining installations."
+                    $global:yesToAll = $true
+                }
+                "exit" { # Exit the script gracefully
+                    Write-Host "Exiting the script as per user request."
+                    exit
+                }
+                default { # Invalid input, prompt again
+                    Write-Host "Invalid input. Please enter y, n, all, or exit."
+                    return Install-Tool -toolName $toolName -chocoName $chocoName
+                }
+            }
+        }
+
         Write-Host "========================================"
         Write-Host "Installing $toolName..."
         $installCommand = "choco install $chocoName -y"
@@ -34,10 +67,10 @@ function Install-Tool {
         Invoke-Expression $installCommand
         Write-Host "$toolName installed successfully!"
         Write-Host "========================================"
-        return $true
+        return "installed"
     } else {
         Write-Host "$toolName is already installed."
-        return $false
+        return "already installed"
     }
 }
 
@@ -73,7 +106,14 @@ $report = @()
 Write-Host "Installing all tools..."
 $report += if (Install-Tool -toolName "slack" -chocoName "slack") { "Slack: Installed" } else { "Slack: Already installed" }
 foreach ($tool in $tools) {
-    $report += if (Install-Tool -toolName $tool.ToolName -chocoName $tool.ChocoName) { "$($tool.ToolName): Installed" } else { "$($tool.ToolName): Already installed" }
+    $status = Install-Tool -toolName $tool.ToolName -chocoName $tool.ChocoName
+    if ($status -eq "skipped") {
+        $report += "$($tool.ToolName): Skipped based on user choice"
+    } elseif ($status -eq "installed") {
+        $report += "$($tool.ToolName): Installed"
+    } else {
+        $report += "$($tool.ToolName): Already installed"
+    }
 }
 
 # Print the report
