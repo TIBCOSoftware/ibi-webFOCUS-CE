@@ -6,11 +6,15 @@
 This PowerShell script is designed to streamline the installation of essential software on a fresh Windows installation.
 Whether you're setting up a new machine or reconfiguring an existing one, this script automates the tedious process of installing commonly used software, ensuring that your environment is ready to go in no time.
 
+#### Script in action (below is animated giff that shows how the script works)
+
 ![In Action](PowerShell_Choco_install.gif)
+
 ### Objective
 
 The primary objective of this script is to automate the installation of a suite of software that many users typically install when setting up a new Windows machine. 
 The script currently covers a subset of software that is widely regarded as essential, but you can easily customize it to include additional tools as per your requirements.
+By default, script will ask for user input to install each software, but user can pass `-y` flag to avoid any prompts.
 
 ### Introduction to Chocolatey
 
@@ -42,6 +46,12 @@ For more information, visit the [official Chocolatey website](https://chocolatey
      ```powershell
      iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/TIBCOSoftware/ibi-webFOCUS-CE/work-in-progress/Scripts/bootstrap/windows/install_software.ps1'))
      ```
+   - Run save script as above but pass ing "-y" to avoid any prompts:  
+     Below command will download and execute the script passing `-y` flag so it will run without any prompts.
+     ```powershell
+     Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/TIBCOSoftware/ibi-webFOCUS-CE/work-in-progress/Scripts/bootstrap/windows/install_software.ps1' -OutFile 'install_software.ps1'; .\install_software.ps1 -y
+     ```
+3. **Review the Installation:**
 
 #### Example Error Message if Not Run as Administrator
 
@@ -62,6 +72,29 @@ This error occurs because the script needs elevated privileges to install softwa
 #### Overview of `install_software.ps1`
 
 This script is named `install_software.ps1` and is designed to install a predefined list of software using Chocolatey. It checks for each software's existence on the system and installs it only if it's not already installed, ensuring idempotency.
+
+#### Prompt for Confirmation
+
+When you run the script, you may see a prompt asking for confirmation to proceed with the installation. You can respond with `Y` to continue or `N` to cancel the installation.
+If you don't want to see these prompts, you can pass the `-y` flag to the script to automatically confirm all installations.
+
+#### Example Output (with prompts)
+
+```powershell
+PS C:\Windows\system32> iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/TIBCOSoftware/ibi-webFOCUS-CE/work-in-progress/Scripts/bootstrap/windows/install_software.ps1'))
+Chocolatey is already installed.
+Installing all tools...
+Do you want to install [slack]? (y/n/all/exit): y
+Installing slack...
+========================================
+Installing slack...
+Running command: choco install slack -y
+slack installed successfully!
+========================================
+notepad++ is already installed.
+Do you want to install [7zip]? (y/n/all/exit): all
+
+```
 
 #### Software Installed by This Script
 
