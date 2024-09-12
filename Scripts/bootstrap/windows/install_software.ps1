@@ -77,6 +77,7 @@ function Install-Tool {
 # Define list of tools
 $tools = @(
     @{ ToolName = "notepad++"; ChocoName = "notepadplusplus" }
+    @{ ToolName = "KDiff"; ChocoName = "kdiff3" } #
     @{ ToolName = "7zip"; ChocoName = "7zip" }
     @{ ToolName = "winscp"; ChocoName = "winscp" }
     @{ ToolName = "MobaXterm"; ChocoName = "mobaxterm" }
