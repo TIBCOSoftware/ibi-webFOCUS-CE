@@ -102,6 +102,7 @@ The script installs the following software:
 
 - **Slack:** A popular messaging app for teams, providing real-time messaging, file sharing, and integrations with other tools.
 - **Notepad++:** A free source code editor and Notepad replacement that supports several languages.
+- **KDiff3:** Is a graphical text difference analyzer for up to 3 input files, provides character-by-character analysis and a text merge tool with integrated editor. It can also compare and merge directories
 - **7zip:** A file archiver with a high compression ratio, supporting various file formats.
 - **WinSCP:** A free SFTP, SCP, and FTP client for Windows, supporting file transfer and remote file management.
 - **MobaXterm:** An enhanced terminal for Windows with an X11 server, tabbed SSH client, network tools, and more.
