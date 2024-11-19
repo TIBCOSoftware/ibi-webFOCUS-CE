@@ -52,7 +52,7 @@ The script performs the following steps:
 - Deploys the Flannel pod network.
 - Ensures master node scheduling is enabled.
 
-### Sample output 
+### Sample output of above script
 
 ```bash
 curl https://raw.githubusercontent.com/TIBCOSoftware/ibi-webFOCUS-CE/refs/heads/work-in-progress/Scripts/bootstrap/rhel/install-preReq-k8s128-containerd.sh | sudo sh -
