@@ -55,7 +55,7 @@ The script performs the following steps:
 ### Sample output 
 
 ```bash
-curl https://raw.githubusercontent.com/TIBCOSoftware/ibi-webFOCUS-CE/refs/heads/work-in-progress/Scripts/bootstrap/rhel/install-preReq-k8s126-containerd.sh | sudo sh -
+curl https://raw.githubusercontent.com/TIBCOSoftware/ibi-webFOCUS-CE/refs/heads/work-in-progress/Scripts/bootstrap/rhel/install-preReq-k8s128-containerd.sh | sudo sh -
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100  6877  100  6877    0     0  36386      0 --:--:-- --:--:-- --:--:-- 36579
