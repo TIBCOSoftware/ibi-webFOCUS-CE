@@ -39,7 +39,7 @@ This script automates the installation and configuration of a Kubernetes cluster
    ```
    You can also run the script directly from the web using `curl`:
    ```bash
-   curl https://raw.githubusercontent.com/TIBCOSoftware/ibi-webFOCUS-CE/refs/heads/work-in-progress/Scripts/bootstrap/rhel/install-preReq-k8s126-containerd.sh | sudo sh -
+   curl https://raw.githubusercontent.com/TIBCOSoftware/ibi-webFOCUS-CE/refs/heads/work-in-progress/Scripts/bootstrap/rhel/install-preReq-k8s128-containerd.sh | sudo sh -
     ```
 
 ### What the Script Does
