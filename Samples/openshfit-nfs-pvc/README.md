@@ -42,14 +42,16 @@ sudo chmod 777 /srv/nfs/data
 ### 3. Edit the Exports File
 To make the directory available for sharing, add the directory path to the `/etc/exports` file:
 
+For this command replace `<k8s_node_ip>` with the IP address of the node where the NFS client will be running.  
+⚠️ If you don't provide the IP address of the node where the NFS client will be running, the NFS client will not be able to access the NFS server.
 ```bash
 # Example echo "/srv/nfs/data 10.65.50.24(rw,sync,no_subtree_check,no_root_squash,insecure)" | sudo tee -a /etc/exports
-echo "/srv/nfs/data <nfs-server-ip-address>(rw,sync,no_subtree_check,no_root_squash,insecure)" | sudo tee -a /etc/exports
+echo "/srv/nfs/data <k8s_node_ip>(rw,sync,no_subtree_check,no_root_squash,insecure)" | sudo tee -a /etc/exports
 ```
 
 #### Explanation of the `exports` line:
 - `/srv/nfs/data`: This is the directory on the NFS server that you want to share.
-- `10.65.50.24`: The IP address (or network) of the machine that can access the NFS share. You can replace it with your specific client IP or subnet.
+- `10.65.50.24`: The IP address (or network) of the machine that can access the NFS share. You can replace it with your specific client IP or subnet. This should be IP of k8s Node
 - `rw`: Allows read-write access to the shared directory.
 - `sync`: Ensures that changes to the shared directory are written immediately to disk.
 - `no_subtree_check`: Disables subtree checking, which can improve performance for large directories.
@@ -75,7 +77,7 @@ This command will show the exported directories and their configuration. The out
 
 ```bash
 # Example /srv/nfs/data 10.65.50.24(rw,sync,no_subtree_check,no_root_squash,insecure)
-/srv/nfs/data nfs-server-ip-address(rw,sync,no_subtree_check,no_root_squash,insecure)
+/srv/nfs/data <k8s_node_ip>(rw,sync,no_subtree_check,no_root_squash,insecure)
 ```
 
 ### 6. Test the Connection to the NFS Server
