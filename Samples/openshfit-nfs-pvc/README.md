@@ -2,7 +2,12 @@
 # NFS Setup and Persistent Volume Configuration for Kubernetes
 
 ## Introduction
-This guide will walk you through the steps to set up an NFS server on Ubuntu, configure it for Kubernetes with the NFS Subdir External Provisioner, and mount it as a Persistent Volume in your application.
+
+![Steps](steps_v2.png)
+
+In this document, we will explain how to connect Kubernetes (in this case, CRC OpenShift) with an NFS server. The NFS server can either be hosted on the same machine as the single-node cluster or on a separate machine. It does not matter whether the NFS server is running on Ubuntu or RHEL.
+
+The process involves using a Kubernetes Storage Class that is configured to connect to the NFS server, which includes all necessary NFS connectivity details. Once the Storage Class is set up and configured, we create a Persistent Volume Claim (PVC) that references this Storage Class. The PVC then provisions a Persistent Volume (PV). Finally, we mount the PV to a pod to verify connectivity and check if the files from the NFS server are accessible.
 
 ## Prerequisites
 - An Ubuntu system to install and configure NFS
