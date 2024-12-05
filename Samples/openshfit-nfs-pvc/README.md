@@ -243,7 +243,8 @@ helm repo update
 Replace `<nfs-server-ip-address>` and `/srv/nfs/data` with the NFS server's IP and path:
 
 ```bash
-helm install nfs-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner   --set nfs.server=<nfs-server-ip-address>   --set nfs.path=/srv/nfs/data
+helm install nfs-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+  --set nfs.server=<nfs-server-ip-address>   --set nfs.path=/srv/nfs/data
 ```
 
 **Note:** This will install the NFS client.
