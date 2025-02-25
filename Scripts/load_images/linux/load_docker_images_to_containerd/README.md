@@ -27,6 +27,16 @@ This script consolidates two distinct steps documented in the WebFOCUS CE docume
 - **Downloading the shipped images:** [WebFOCUS CE Documentation - Downloading Images](https://docs.tibco.com/pub/wfce/1.3.3/doc/html/Default.htm#Installation-and-Deployment-Guide/Using_images_for_docker.htm#Download)
 - **Copying container images into the `containerd` runtime:** [WebFOCUS CE Documentation - Copying Images](https://docs.tibco.com/pub/wfce/1.3.3/doc/html/Default.htm#Installation-and-Deployment-Guide/Requirements_and_Prerequisites.htm#Containe)
 
+## How to Use It
+
+1. Copy or download `load_wfce_image.sh` and place it in the same directory as the `IBI_wfce_images_*.tar` file.
+2. Ensure that all prerequisites listed above are met.
+3. Make the script executable by running:
+   ```sh
+   chmod +x load_wfce_image.sh
+   ```
+4. This script requires `sudo` privileges, so ensure your user has permission to run `sudo` commands.
+5. This script assumes you want to extract images from the tar file and copy them into `containerd` running on the same Linux machine.
 
 ## When to Use This Script
 
