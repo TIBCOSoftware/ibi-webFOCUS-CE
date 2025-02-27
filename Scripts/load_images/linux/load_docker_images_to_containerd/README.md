@@ -51,7 +51,7 @@ If you intend to push these images to an image registry, **you do not need to ru
 
 ## Demo 
 
-![Demo](load_wfce_image.gif)
+![Demo](load_images.gif)
 
 ## Usage
 
