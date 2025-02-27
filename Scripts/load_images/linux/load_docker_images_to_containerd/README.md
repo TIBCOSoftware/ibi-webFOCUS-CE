@@ -48,6 +48,11 @@ Use this script if you need to:
 
 If you intend to push these images to an image registry, **you do not need to run this script**. Instead, load them into Docker/Podman and push them directly to the registry.
 
+
+## Demo 
+
+![Demo](load_wfce_image.gif)
+
 ## Usage
 
 ### Basic Commands
